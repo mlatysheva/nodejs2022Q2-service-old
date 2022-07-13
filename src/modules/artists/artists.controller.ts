@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, HttpCode, ParseUUIDPipe, HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { uuIdValidateV4 } from '../../utils/uuIdValidate';
+import { ArtistModel } from './artists.interface';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 
-@Controller('artists')
+@Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
-  @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
-    return this.artistsService.create(createArtistDto);
-  }
-
   @Get()
-  findAll() {
+  @HttpCode(HttpStatus.OK)
+  public findAll(): Array<ArtistModel> {
     return this.artistsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.artistsService.findOne(+id);
+  @HttpCode(HttpStatus.OK)
+  public findOne(@Param('id') id: string): ArtistModel {
+    if (!uuIdValidateV4(id)) {
+      throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST);
+    }
+    const artist = this.artistsService.findOne(id);
+    if (!artist) {
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    return artist;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
-    return this.artistsService.update(+id, updateArtistDto);
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  public create(@Body(new ValidationPipe()) createdArtist: CreateArtistDto): ArtistModel {
+    return this.artistsService.create(createdArtist);
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  public update(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body(new ValidationPipe()) updatedArtist: UpdateArtistDto) {
+    if (!uuIdValidateV4(id)) {
+      throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST);
+    }
+    const artist = this.artistsService.findOne(id);
+    if (!artist) {
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    return this.artistsService.update(id, updatedArtist);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.artistsService.remove(+id);
+  @HttpCode(201)
+  public delete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string): void {
   }
 }

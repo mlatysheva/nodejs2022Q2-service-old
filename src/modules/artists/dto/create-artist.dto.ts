@@ -1,14 +1,12 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
-
+import { InputType } from '@nestjs/graphql';
+@InputType()
 export class CreateArtistDto {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
 
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   grammy: boolean;
 }

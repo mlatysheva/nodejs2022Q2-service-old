@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-export class User {a
+export class User {
   id: string;
   login: string;
   version: number;
