@@ -27,8 +27,8 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
-@Controller('Album')
-@ApiTags('Album')
+@Controller('album')
+@ApiTags('album')
 export class AlbumsController {
   constructor(
     private readonly albumsService: AlbumsService, // private readonly favouritesService: FavouritesService, // private readonly trackService: TrackService,
