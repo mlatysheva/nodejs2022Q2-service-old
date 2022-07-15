@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { readFile } from 'fs/promises';
 import { dirname, join, resolve } from 'path';
 import { AppModule } from './app.module';
@@ -22,13 +22,6 @@ async function bootstrap() {
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');
   const document = parse(DOC_API);
   SwaggerModule.setup('doc', app, document);
-  // const config = new DocumentBuilder()
-  //   .setTitle('Home Library Service')
-  //   .setDescription('Home music library service')
-  //   .setVersion('1.0.0')
-  //   .build();
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('doc', app, document);
   await app.listen(port);
 }
 bootstrap();

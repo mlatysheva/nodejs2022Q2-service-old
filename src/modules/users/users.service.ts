@@ -16,7 +16,7 @@ export class UsersService {
 
   public findOne(id: string): UserModel {
     const user: UserModel = this.users.find((user) => user.id === id);
-    this.logger.log('Getting the user by id');
+    this.logger.log(`Getting the user by id ${id}`);
     return user;
   }
 
@@ -43,13 +43,13 @@ export class UsersService {
       version: user.version + 1,
       updatedAt: Date.now(),
     });
-    this.logger.log('Updating the user');
+    this.logger.log(`Updating the user with id ${id}`);
     return this.users[index];
   }
 
   public delete(id: string): void {
     const index: number = this.users.findIndex((User) => User.id === id);
-    this.logger.log('Deleting the user');
+    this.logger.log(`Deleting the user with id ${id}`);
     this.users.splice(index, 1);
   }
 }

@@ -3,13 +3,10 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { v4 as uuid } from 'uuid';
 import { AlbumModel } from './entities/album.entity';
-import { ArtistsService } from '../artists/artists.service';
 import { TracksService } from '../tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
-  @Inject(forwardRef(() => ArtistsService))
-  private artistsService: ArtistsService;
   @Inject(forwardRef(() => TracksService))
   private tracksService: TracksService;
   // @Inject(forwardRef(() => FavouritesService))
@@ -46,12 +43,6 @@ export class AlbumsService {
       ...updatedAlbum,
     };
     this.logger.log('Updating the album');
-    // this.Albums[index] = Object.assign(Album, updatedAlbum);
-    // this.Albums[index] = {
-    //   id,
-    //   name: updatedAlbum.name || this.Albums[index].name,
-    //   grammy: updatedAlbum.grammy || this.Albums[index].grammy,
-    // };
     return this.albums[index];
   }
 
@@ -67,14 +58,6 @@ export class AlbumsService {
     const index: number = this.albums.findIndex((album) => album.id === id);
     this.logger.log('Deleting the album');
     this.albums.splice(index, 1);
-    const tracks = this.tracksService.findAll();
-    this.logger.log(`tracks are:`);
-    this.logger.log(tracks);
-    tracks.forEach((track) => {
-      if (track.albumId === id) {
-        track.albumId = null;
-      }
-    });
     this.tracksService.setAlbumIdToNull(id);
     // this.favouritesService.removeAlbum(id);
   }

@@ -17,7 +17,6 @@ import { uuIdValidateV4 } from '../../utils/uuIdValidate';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserModel } from './entities/user.entity';
-import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('user')
 export class UsersController {
@@ -39,12 +38,9 @@ export class UsersController {
     if (!user) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }
-    if (Object(user).id === undefined) {
-      throw new HttpException('User entry is empty.', HttpStatus.NO_CONTENT);
-    }
     return user;
   }
-  @UseInterceptors(ClassSerializerInterceptor)
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   public create(@Body() createdUser: CreateUserDto): UserModel {
@@ -83,9 +79,8 @@ export class UsersController {
     }
     const user = this.usersService.findOne(id);
     if (!user) {
-      throw new HttpException('Track not found.', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }
-    // this.favouritesService.deleteFavoriteTrack(id);
     this.usersService.delete(id);
   }
 }
