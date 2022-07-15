@@ -17,6 +17,7 @@ import { uuIdValidateV4 } from '../../utils/uuIdValidate';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserModel } from './entities/user.entity';
+import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('user')
 export class UsersController {
@@ -43,7 +44,7 @@ export class UsersController {
     }
     return user;
   }
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   public create(@Body() createdUser: CreateUserDto): UserModel {

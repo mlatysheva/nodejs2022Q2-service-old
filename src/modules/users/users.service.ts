@@ -21,13 +21,13 @@ export class UsersService {
   }
 
   public create(user: CreateUserDto): UserModel {
-    const newUser: UserModel = {
+    const newUser = new UserModel({
       ...user,
       id: uuid(),
       version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-    };
+    });
 
     this.users.push(newUser);
     this.logger.log(`User with id ${newUser.id} created`);
