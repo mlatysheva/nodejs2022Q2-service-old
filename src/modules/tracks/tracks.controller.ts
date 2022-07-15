@@ -16,9 +16,9 @@ import { uuIdValidateV4 } from '../../utils/uuIdValidate';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { ApiTags } from '@nestjs/swagger';
 import { TrackModel } from './entities/track.entity';
 import {
+  ApiTags,
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
@@ -31,7 +31,7 @@ import {
 @ApiTags('track')
 export class TracksController {
   constructor(
-    private readonly tracksService: TracksService, // private readonly favouritesService: FavouritesService, // private readonly artistService: ArtistService,
+    private readonly tracksService: TracksService, // private readonly favouritesService: FavouritesService,
   ) {}
 
   @Get()
@@ -51,14 +51,14 @@ export class TracksController {
     if (!uuIdValidateV4(id)) {
       throw new HttpException('Invalid UUID.', HttpStatus.BAD_REQUEST);
     }
-    const Track = this.tracksService.findOne(id);
-    if (!Track) {
+    const track = this.tracksService.findOne(id);
+    if (!track) {
       throw new HttpException('Track not found.', HttpStatus.NOT_FOUND);
     }
-    if (Object(Track).id === undefined) {
+    if (Object(track).id === undefined) {
       throw new HttpException('Track entry is empty.', HttpStatus.NO_CONTENT);
     }
-    return Track;
+    return track;
   }
 
   @Post()
@@ -87,8 +87,8 @@ export class TracksController {
     if (!uuIdValidateV4(id)) {
       throw new HttpException('Invalid UUID.', HttpStatus.BAD_REQUEST);
     }
-    const Track = this.tracksService.findOne(id);
-    if (!Track) {
+    const track = this.tracksService.findOne(id);
+    if (!track) {
       throw new HttpException('Track not found.', HttpStatus.NOT_FOUND);
     }
     return this.tracksService.update(id, updatedTrack);
@@ -109,7 +109,18 @@ export class TracksController {
       throw new HttpException('Track not found.', HttpStatus.NOT_FOUND);
     }
     // this.favouritesService.deleteFavoriteTrack(id);
-    // this.trackService.setTrackIdIsNull(id);
     this.tracksService.delete(id);
+  }
+
+  @Delete('artist/:id')
+  @HttpCode(204)
+  setArtistIdToNull(@Param() id) {
+    this.tracksService.setArtistIdToNull(id);
+  }
+
+  @Delete('album/:id')
+  @HttpCode(204)
+  setAlbumIdToNull(@Param() id) {
+    this.tracksService.setAlbumIdToNull(id);
   }
 }

@@ -30,9 +30,7 @@ import {
 @Controller('album')
 @ApiTags('album')
 export class AlbumsController {
-  constructor(
-    private readonly albumsService: AlbumsService, // private readonly favouritesService: FavouritesService, // private readonly trackService: TrackService,
-  ) {}
+  constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -109,7 +107,12 @@ export class AlbumsController {
       throw new HttpException('Album not found.', HttpStatus.NOT_FOUND);
     }
     // this.favouritesService.deleteFavoriteAlbum(id);
-    // this.trackService.setAlbumIdIsNull(id);
     this.albumsService.delete(id);
+  }
+
+  @Delete('artist/:id')
+  @HttpCode(204)
+  setArtistIdToNull(@Param() id) {
+    this.albumsService.setArtistIdToNull(id);
   }
 }

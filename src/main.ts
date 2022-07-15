@@ -1,14 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { readFile } from 'fs/promises';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { AppModule } from './app.module';
 import { parse } from 'yaml';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { cwd } from 'process';
+import { Reflector } from '@nestjs/core';
+
+dotenv.config({ path: resolve(cwd(), '.env') });
 
 async function bootstrap() {
+  const port = process.env.PORT || 4000;
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');
   const document = parse(DOC_API);
@@ -20,6 +29,6 @@ async function bootstrap() {
   //   .build();
   // const document = SwaggerModule.createDocument(app, config);
   // SwaggerModule.setup('doc', app, document);
-  await app.listen(4000);
+  await app.listen(port);
 }
 bootstrap();

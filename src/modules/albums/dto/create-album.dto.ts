@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  ValidateIf,
+} from 'class-validator';
 import { InputType } from '@nestjs/graphql';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -17,5 +23,6 @@ export class CreateAlbumDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @IsString()
+  @ValidateIf((_, value) => value !== null)
   artistId: string | null;
 }

@@ -52,4 +52,25 @@ export class TracksService {
     this.logger.log('Deleting the track');
     this.tracks.splice(index, 1);
   }
+
+  public setArtistIdToNull(artistId: string): void {
+    console.log(`we are in the setArtistIdToNull method`);
+    this.tracks.forEach((track) => {
+      if (track.artistId === artistId) {
+        track.artistId = null;
+      }
+    });
+  }
+
+  public setAlbumIdToNull(albumId: string): void {
+    this.logger.log(`we are in the setAlbumIdToNull method, tracks are:`);
+    this.logger.log(this.tracks);
+    this.tracks.forEach((track) => {
+      this.logger.log(`track.albumId: ${track.albumId}`);
+      this.logger.log(`albumId: ${albumId}`);
+      if (track.albumId === albumId) {
+        track.albumId = null;
+      }
+    });
+  }
 }
